@@ -8,6 +8,7 @@ The following program contains the usage of textures, lighting, mouse and keyboa
 In the following program I have created a junction with four traffic lights whose all synchronized and controled by a pitch. 
 
 
-<img width="449" alt=" " src="https://user-images.githubusercontent.com/106242827/234227516-64a8b4cb-fc25-450b-8924-5313efa24693.png">
+<img width="449" alt=" " src="https://user-images.githubusercontent.com/106242827/234244041-3427b687-7370-4796-8f25-152d475e1dd9.png">
+
 
 https://youtube.com/shorts/FoHhdb90Eh4?feature=share
