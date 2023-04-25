@@ -3,9 +3,10 @@
 
 #define VERTICAL 1 
 #define HORIZONTAL 0
-#define LIGHTOFF 0.175
+#define LIGHTOFF_BASE 0.175
+#define LIGHTOFF_OFFSET 0.25
 #define TRAFIC_LIGHT_BODY 0.15
-#define TRAFIC_LIGHT_PROTECTOR 0.1
+#define TRAFIC_LIGHT_PROTECTOR 0.10
 
 const int W = 600;
 const int H = 600;
@@ -15,7 +16,7 @@ double pitch = 0;
 bool pitch_is_moving = false;
 double pitch_state = 0;
 double eyeXPosAngle = 45;
-int last = VERTICAL;
+int last = HORIZONTAL;
 
 const int TW = 256; // must be a power of 2
 const int TH = 256; // must be a power of 2
@@ -52,9 +53,15 @@ void mouse_drag(int x, int y)
 		if ((H - y) <= 100 && (H - y) > 50)
 			pitch_state = 0; // yellow
 		else if ((H - y) <= 50 && (H - y) > 0)
+		{
 			pitch_state = 1;//green
+			last = HORIZONTAL;
+		}
 		else
+		{
 			pitch_state = 2;//red
+			last = VERTICAL;
+		}
 	}
 }
 
@@ -349,11 +356,10 @@ void drawTraficLight(int side)//side == 1 to vertical || side == 0 to horizontal
 			glTranslated(0, 4.75, 0);
 			glRotated(90, 0, 0, 1);
 			glScaled(0.75, 0.75, 0.75);
-			if(((pitch_state==2 && side == VERTICAL) || (pitch_state == 1 && side == HORIZONTAL)))
+			if(((pitch_state==2 && side == VERTICAL) || (pitch_state == 1 && side == HORIZONTAL)) || (side==last && pitch_state==0))
 				DrawSphere(30, 20, 1, 0, 0); 
 			else 
-				DrawSphere(30, 20, LIGHTOFF+0.25, LIGHTOFF, LIGHTOFF);
-
+				DrawSphere(30, 20, LIGHTOFF_BASE+ LIGHTOFF_OFFSET, LIGHTOFF_BASE, LIGHTOFF_BASE);
 		}glPopMatrix();
 
 		glPushMatrix(); {// light protector yellow
@@ -366,7 +372,7 @@ void drawTraficLight(int side)//side == 1 to vertical || side == 0 to horizontal
 			glTranslated(0, 2.75, 0);
 			glRotated(90, 0, 0, 1);
 			glScaled(0.75, 0.75, 0.75);
-			(pitch_state ==0 )? DrawSphere(30, 20, 1, 1, 0):DrawSphere(30, 20, LIGHTOFF + 0.25, LIGHTOFF + 0.25, LIGHTOFF);
+			(pitch_state ==0 )? DrawSphere(30, 20, 1, 1, 0):DrawSphere(30, 20, LIGHTOFF_BASE + LIGHTOFF_OFFSET, LIGHTOFF_BASE + LIGHTOFF_OFFSET, LIGHTOFF_BASE);
 		}glPopMatrix();
 
 		glPushMatrix(); {// light protector green
@@ -382,7 +388,7 @@ void drawTraficLight(int side)//side == 1 to vertical || side == 0 to horizontal
 			if ((pitch_state == 1 && side == VERTICAL) || (pitch_state == 2 && side == HORIZONTAL))
 				DrawSphere(30, 20, 0, 1, 0);
 			else
-				DrawSphere(30, 20, LIGHTOFF, LIGHTOFF + 0.25, LIGHTOFF);
+				DrawSphere(30, 20, LIGHTOFF_BASE, LIGHTOFF_BASE + LIGHTOFF_OFFSET, LIGHTOFF_BASE);
 		}glPopMatrix();
 	}
 	glPopMatrix();
@@ -453,7 +459,7 @@ void display()
 	glFrustum(-1, 1, -1, 1, 0.7, 350);
 
 	// look to variable direction
-	gluLookAt(sqrt(2)*10*sin(eyeXPosAngle), 10, sqrt(2) * 10 * cos(eyeXPosAngle),
+	gluLookAt(sqrt(2)*10*sin(eyeXPosAngle), 8, sqrt(2) * 10 * cos(eyeXPosAngle),
 		0, 0, 0,  // this is the direction
 		0, 1, 0);
 
@@ -466,8 +472,8 @@ void display()
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, l0dif);
 	glLightfv(GL_LIGHT0, GL_SPECULAR, l0sp);
 	glLightfv(GL_LIGHT0, GL_POSITION, l0pos);
-
 	glDisable(GL_LIGHTING);
+
 	//////////////////////////////////////    Adding  Texture   /////////////////////////////////////
 
 	glPushMatrix();
