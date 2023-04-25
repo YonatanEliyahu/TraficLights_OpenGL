@@ -1,0 +1,8 @@
+TraficLights_OpenGL
+
+In the following Program I will demonstrate the ability to work on several objects with the same pitch control,
+the ability to spin around an axis with 'A' and 'D' in the keyboard.
+
+The following progarm containes usage of textures, lighting, mouse and keyboard functions.
+
+In the following program I have created a junction with four traficlight 

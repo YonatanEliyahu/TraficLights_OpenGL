@@ -1,6 +1,12 @@
 #include "glut.h"
 #include <math.h>
 
+#define VERTICAL 1 
+#define HORIZONTAL 0
+#define LIGHTOFF 0.175
+#define TRAFIC_LIGHT_BODY 0.15
+#define TRAFIC_LIGHT_PROTECTOR 0.1
+
 const int W = 600;
 const int H = 600;
 const double PI = 3.14;
@@ -9,6 +15,7 @@ double pitch = 0;
 bool pitch_is_moving = false;
 double pitch_state = 0;
 double eyeXPosAngle = 45;
+int last = VERTICAL;
 
 const int TW = 256; // must be a power of 2
 const int TH = 256; // must be a power of 2
@@ -318,13 +325,13 @@ void drawTraficLight(int side)//side == 1 to vertical || side == 0 to horizontal
 	{
 		glPushMatrix(); {// outer budy
 			glScaled(1,6,1);
-			DrawCilynder(30, 1, 1,1, 0.27, 0.27, 0.27);
+			DrawCilynder(30, 1, 1,1, TRAFIC_LIGHT_BODY, TRAFIC_LIGHT_BODY, TRAFIC_LIGHT_BODY);
 		}glPopMatrix();
 
 		glPushMatrix(); {//face
 			glTranslated(-1,0,-1);
 			glBegin(GL_POLYGON);
-			glColor3d(0, 0, 0);
+			glColor3d(TRAFIC_LIGHT_BODY, TRAFIC_LIGHT_BODY, TRAFIC_LIGHT_BODY);
 			glVertex3d(1,0,0);
 			glVertex3d(1,0,2);
 			glVertex3d(1,6,2);
@@ -336,16 +343,16 @@ void drawTraficLight(int side)//side == 1 to vertical || side == 0 to horizontal
 			glTranslated(0,5,0);
 			glRotated(90,0,0,1);
 			glScaled(1,1.5,1);
-			DrawCilynder(30, 1, 1, 1, 0.27, 0.27, 0.27);
+			DrawCilynder(30, 1, 1, 1, TRAFIC_LIGHT_PROTECTOR, TRAFIC_LIGHT_PROTECTOR, TRAFIC_LIGHT_PROTECTOR);
 		}glPopMatrix();
 		glPushMatrix(); {// red light 
 			glTranslated(0, 4.75, 0);
 			glRotated(90, 0, 0, 1);
 			glScaled(0.75, 0.75, 0.75);
-			if((pitch_state==2 && side == 1) || (pitch_state == 1 && side == 0))
+			if(((pitch_state==2 && side == VERTICAL) || (pitch_state == 1 && side == HORIZONTAL)))
 				DrawSphere(30, 20, 1, 0, 0); 
 			else 
-				DrawSphere(30, 20, 0.5, 0.5, 0.5);
+				DrawSphere(30, 20, LIGHTOFF+0.25, LIGHTOFF, LIGHTOFF);
 
 		}glPopMatrix();
 
@@ -353,29 +360,29 @@ void drawTraficLight(int side)//side == 1 to vertical || side == 0 to horizontal
 			glTranslated(0, 3, 0);
 			glRotated(90, 0, 0, 1);
 			glScaled(1, 1.5, 1);
-			DrawCilynder(30, 1, 1, 1, 0.27, 0.27, 0.27);
+			DrawCilynder(30, 1, 1, 1, TRAFIC_LIGHT_PROTECTOR, TRAFIC_LIGHT_PROTECTOR, TRAFIC_LIGHT_PROTECTOR);
 		}glPopMatrix();
 		glPushMatrix(); {// yellow light 
 			glTranslated(0, 2.75, 0);
 			glRotated(90, 0, 0, 1);
 			glScaled(0.75, 0.75, 0.75);
-			(pitch_state ==0 )? DrawSphere(30, 20, 1, 1, 0):DrawSphere(30, 20, 0.5, 0.5, 0.5);
+			(pitch_state ==0 )? DrawSphere(30, 20, 1, 1, 0):DrawSphere(30, 20, LIGHTOFF + 0.25, LIGHTOFF + 0.25, LIGHTOFF);
 		}glPopMatrix();
 
 		glPushMatrix(); {// light protector green
 			glTranslated(0, 1, 0);
 			glRotated(90, 0, 0, 1);
 			glScaled(1, 1.5, 1);
-			DrawCilynder(30, 1, 1, 1, 0.27, 0.27, 0.27);
+			DrawCilynder(30, 1, 1, 1, TRAFIC_LIGHT_PROTECTOR, TRAFIC_LIGHT_PROTECTOR, TRAFIC_LIGHT_PROTECTOR);
 		}glPopMatrix();
 		glPushMatrix(); {// green light 
 			glTranslated(0, 0.75, 0);
 			glRotated(90, 0, 0, 1);
 			glScaled(0.75, 0.75, 0.75);
-			if ((pitch_state == 1 && side == 1) || (pitch_state == 2 && side == 0))
+			if ((pitch_state == 1 && side == VERTICAL) || (pitch_state == 2 && side == HORIZONTAL))
 				DrawSphere(30, 20, 0, 1, 0);
 			else
-				DrawSphere(30, 20, 0.5, 0.5, 0.5);
+				DrawSphere(30, 20, LIGHTOFF, LIGHTOFF + 0.25, LIGHTOFF);
 		}glPopMatrix();
 	}
 	glPopMatrix();
@@ -483,25 +490,25 @@ void display()
 	//west
 	glPushMatrix();
 	glTranslated(-3,2,2);
-	drawTraficLight(1);
+	drawTraficLight(VERTICAL);
 	glPopMatrix();
 	//north
 	glPushMatrix();
 	glRotated(-90,0,1,0);
 	glTranslated(-4, 2, 5);
-	drawTraficLight(0);
+	drawTraficLight(HORIZONTAL);
 	glPopMatrix();
 	//east
 	glPushMatrix();
 	glRotated(90, 0, 1, 0);
 	glTranslated(-2,2,3);
-	drawTraficLight(0);
+	drawTraficLight(HORIZONTAL);
 	glPopMatrix();
 	// south
 	glPushMatrix();
 	glRotated(180, 0, 1, 0);
 	glTranslated(-5, 2, 4);
-	drawTraficLight(1);
+	drawTraficLight(VERTICAL);
 	glPopMatrix();
 
 
